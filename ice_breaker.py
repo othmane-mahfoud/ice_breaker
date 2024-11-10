@@ -4,13 +4,14 @@ from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 
 from third_parties.linkedin import scrape_linkedin_profile
+from agents.linkedin_lookup_agent import lookup as linkedin_lookup_agent
 
 from dotenv import load_dotenv
 import os
 
-if __name__ == '__main__':
-    
-    load_dotenv(override=True)
+def ice_break_with(name: str) -> str:
+    linkedin_username = linkedin_lookup_agent(name=name)
+    linkedin_data = scrape_linkedin_profile(linkedin_profile_url=linkedin_username)
     
     summary_template = """
         given the Linkedin information {information} about a person I want you to create:
@@ -37,3 +38,9 @@ if __name__ == '__main__':
     res = chain.invoke(input={"information": linkedin_data})
     
     print(res)
+    
+
+if __name__ == '__main__':
+    
+    load_dotenv(override=True)
+    ice_break_with(name="Eden Marco")
